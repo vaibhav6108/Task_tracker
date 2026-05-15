@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import api from '../services/api';
 
@@ -9,6 +9,24 @@ export default function Tasks() {
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState('all');
+  const [search, setSearch] = useState('');
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  useEffect(() => {
+    const statusParam = searchParams.get('status');
+    if (statusParam && ['all', 'pending', 'in_progress', 'completed', 'overdue'].includes(statusParam)) {
+      setFilter(statusParam);
+    }
+  }, []);
+
+  const handleFilterChange = (key) => {
+    setFilter(key);
+    if (key === 'all') {
+      setSearchParams({});
+    } else {
+      setSearchParams({ status: key });
+    }
+  };
 
   useEffect(() => {
     api.get('/projects').then((projRes) => {
@@ -29,7 +47,16 @@ export default function Tasks() {
     }).catch(() => setLoading(false));
   }, []);
 
-  const filtered = filter === 'all' ? tasks : tasks.filter((t) => t.status === filter);
+  const today = new Date(new Date().toDateString());
+
+  const filtered = filter === 'all' ? tasks
+    : filter === 'overdue'
+      ? tasks.filter((t) => t.status !== 'completed' && t.due_date && new Date(t.due_date) < today)
+      : tasks.filter((t) => t.status === filter);
+
+  const searched = filtered.filter((t) =>
+    t.title.toLowerCase().includes(search.toLowerCase())
+  );
 
   const projectMap = {};
   projects.forEach((p) => { projectMap[p.id] = p.name; });
@@ -39,6 +66,7 @@ export default function Tasks() {
     { key: 'pending', label: 'Pending' },
     { key: 'in_progress', label: 'In Progress' },
     { key: 'completed', label: 'Completed' },
+    { key: 'overdue', label: 'Overdue' },
   ];
 
   return (
@@ -46,6 +74,10 @@ export default function Tasks() {
       <div className="topbar">
         <div className="top-left">
           <h1>Tasks</h1>
+          <div className="search-box">
+            <i className="fa-solid fa-search"></i>
+            <input type="text" placeholder="Search tasks..." value={search} onChange={(e) => setSearch(e.target.value)} />
+          </div>
         </div>
         <div className="top-right">
           <span style={{ color: '#94a3b8', fontSize: 14 }}>{user?.name}</span>
@@ -58,7 +90,7 @@ export default function Tasks() {
           <button
             key={f.key}
             className={`btn ${filter === f.key ? 'btn-primary' : 'btn-secondary'}`}
-            onClick={() => setFilter(f.key)}
+            onClick={() => handleFilterChange(f.key)}
             style={{ padding: '8px 18px', fontSize: 13 }}
           >
             {f.label}
@@ -68,16 +100,16 @@ export default function Tasks() {
 
       {loading ? (
         <div className="loading">Loading...</div>
-      ) : filtered.length === 0 ? (
+      ) : searched.length === 0 ? (
         <div className="card" style={{ textAlign: 'center', padding: 60 }}>
           <i className="fa-solid fa-list-check" style={{ fontSize: 48, color: '#64748b', marginBottom: 16 }}></i>
-          <p style={{ color: '#64748b' }}>No tasks found</p>
+          <p style={{ color: '#64748b' }}>{search ? 'No tasks match your search.' : 'No tasks found'}</p>
         </div>
       ) : (
         <div className="table-section">
           <div className="table-header">
             <h2>{filter === 'all' ? 'All Tasks' : `${filter.replace('_', ' ')} Tasks`}</h2>
-            <span style={{ color: '#64748b', fontSize: 14 }}>{filtered.length} tasks</span>
+            <span style={{ color: '#64748b', fontSize: 14 }}>{searched.length} tasks</span>
           </div>
           <table>
             <thead>
@@ -91,7 +123,7 @@ export default function Tasks() {
               </tr>
             </thead>
             <tbody>
-              {filtered.map((task) => (
+              {searched.map((task) => (
                 <tr key={task.id}>
                   <td style={{ fontWeight: 500 }}>{task.title}</td>
                   <td>

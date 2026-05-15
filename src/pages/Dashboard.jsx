@@ -17,6 +17,7 @@ export default function Dashboard() {
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
   const [activeFilter, setActiveFilter] = useState('all');
+  const [search, setSearch] = useState('');
 
   useEffect(() => {
     api.get('/dashboard/stats').then((res) => {
@@ -40,6 +41,9 @@ export default function Dashboard() {
   };
 
   const filteredTasks = getFilteredTasks();
+  const searchedTasks = filteredTasks.filter((t) =>
+    t.title.toLowerCase().includes(search.toLowerCase())
+  );
 
   const makeConicGradient = () => {
     if (totalTasks === 0) return 'conic-gradient(#1e293b 0deg 360deg)';
@@ -59,6 +63,10 @@ export default function Dashboard() {
       <div className="topbar">
         <div className="top-left">
           <h1>Dashboard</h1>
+          <div className="search-box">
+            <i className="fa-solid fa-search"></i>
+            <input type="text" placeholder="Search tasks..." value={search} onChange={(e) => setSearch(e.target.value)} />
+          </div>
         </div>
         <div className="top-right">
           <span style={{ color: '#94a3b8', fontSize: 14 }}>
@@ -84,7 +92,7 @@ export default function Dashboard() {
           <i className="fa-solid fa-chevron-right" style={{ color: '#64748b' }}></i>
         </div>
 
-        <div className="stat-card" onClick={() => setActiveFilter('completed')}>
+        <div className="stat-card" onClick={() => navigate('/tasks?status=completed')}>
           <div className="stat-left">
             <div className="icon-box" style={{ color: '#34d399' }}>
               <i className="fa-solid fa-circle-check"></i>
@@ -97,7 +105,7 @@ export default function Dashboard() {
           <i className="fa-solid fa-chevron-right" style={{ color: '#64748b' }}></i>
         </div>
 
-        <div className="stat-card" onClick={() => setActiveFilter('in_progress')}>
+        <div className="stat-card" onClick={() => navigate('/tasks?status=in_progress')}>
           <div className="stat-left">
             <div className="icon-box" style={{ color: '#fbbf24' }}>
               <i className="fa-solid fa-bars-progress"></i>
@@ -110,7 +118,7 @@ export default function Dashboard() {
           <i className="fa-solid fa-chevron-right" style={{ color: '#64748b' }}></i>
         </div>
 
-        <div className="stat-card" onClick={() => setActiveFilter('overdue')}>
+        <div className="stat-card" onClick={() => navigate('/tasks?status=overdue')}>
           <div className="stat-left">
             <div className="icon-box" style={{ color: '#f87171' }}>
               <i className="fa-solid fa-clock"></i>
@@ -192,9 +200,9 @@ export default function Dashboard() {
           </div>
         </div>
 
-        {filteredTasks.length === 0 ? (
+        {searchedTasks.length === 0 ? (
           <p style={{ color: '#64748b', padding: 20, textAlign: 'center' }}>
-            {activeFilter === 'overdue' ? 'No overdue tasks!' : 'No tasks found.'}
+            {search ? 'No tasks match your search.' : activeFilter === 'overdue' ? 'No overdue tasks!' : 'No tasks found.'}
           </p>
         ) : (
           <table>
@@ -209,7 +217,7 @@ export default function Dashboard() {
               </tr>
             </thead>
             <tbody>
-              {filteredTasks.map((task) => (
+              {searchedTasks.map((task) => (
                 <tr key={task.id}>
                   <td style={{ fontWeight: 500 }}>{task.title}</td>
                   <td>{task.project_name}</td>

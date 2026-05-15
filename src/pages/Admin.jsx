@@ -1,12 +1,15 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import api from '../services/api';
 
 export default function Admin() {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [users, setUsers] = useState([]);
   const [adminStats, setAdminStats] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState('');
 
   const fetchData = async () => {
     try {
@@ -54,6 +57,10 @@ export default function Admin() {
       <div className="topbar">
         <div className="top-left">
           <h1>Admin Panel</h1>
+          <div className="search-box">
+            <i className="fa-solid fa-search"></i>
+            <input type="text" placeholder="Search users..." value={search} onChange={(e) => setSearch(e.target.value)} />
+          </div>
         </div>
         <div className="top-right">
           <span style={{ color: '#94a3b8', fontSize: 14 }}>{user?.name}</span>
@@ -74,7 +81,7 @@ export default function Admin() {
               </div>
             </div>
           </div>
-          <div className="stat-card">
+          <div className="stat-card" onClick={() => navigate('/projects')} style={{ cursor: 'pointer' }}>
             <div className="stat-left">
               <div className="icon-box" style={{ color: '#fbbf24' }}>
                 <i className="fa-solid fa-diagram-project"></i>
@@ -84,8 +91,9 @@ export default function Admin() {
                 <p>{adminStats.totalProjects}</p>
               </div>
             </div>
+            <i className="fa-solid fa-chevron-right" style={{ color: '#64748b' }}></i>
           </div>
-          <div className="stat-card">
+          <div className="stat-card" onClick={() => navigate('/tasks')} style={{ cursor: 'pointer' }}>
             <div className="stat-left">
               <div className="icon-box" style={{ color: '#34d399' }}>
                 <i className="fa-solid fa-list-check"></i>
@@ -95,6 +103,7 @@ export default function Admin() {
                 <p>{adminStats.totalTasks}</p>
               </div>
             </div>
+            <i className="fa-solid fa-chevron-right" style={{ color: '#64748b' }}></i>
           </div>
           <div className="stat-card">
             <div className="stat-left">
@@ -113,7 +122,9 @@ export default function Admin() {
       <div className="table-section">
         <div className="table-header">
           <h2>User Management</h2>
-          <span style={{ color: '#64748b', fontSize: 14 }}>{users.length} users</span>
+          <span style={{ color: '#64748b', fontSize: 14 }}>
+            {search ? users.filter((u) => u.name.toLowerCase().includes(search.toLowerCase()) || u.email.toLowerCase().includes(search.toLowerCase())).length : users.length} users
+          </span>
         </div>
         <table>
           <thead>
@@ -127,40 +138,55 @@ export default function Admin() {
             </tr>
           </thead>
           <tbody>
-            {users.map((u) => (
-              <tr key={u.id}>
-                <td style={{ fontWeight: 500 }}>{u.name}</td>
-                <td style={{ color: '#94a3b8' }}>{u.email}</td>
-                <td>
-                  <select
-                    className="select-inline"
-                    value={u.role}
-                    onChange={(e) => handleRoleChange(u.id, e.target.value)}
-                    disabled={u.id === user.id}
-                  >
-                    <option value="member">Member</option>
-                    <option value="admin">Admin</option>
-                  </select>
-                </td>
-                <td style={{ fontSize: 14 }}>{u.project_count}</td>
-                <td style={{ fontSize: 14 }}>{u.task_count}</td>
-                <td>
-                  {u.id !== user.id && (
-                    <button
-                      className="btn btn-danger"
-                      style={{ padding: '6px 14px', fontSize: 12 }}
-                      onClick={() => handleDeleteUser(u.id, u.name)}
+            {(() => {
+              const filteredUsers = users.filter((u) =>
+                u.name.toLowerCase().includes(search.toLowerCase()) ||
+                u.email.toLowerCase().includes(search.toLowerCase())
+              );
+              if (filteredUsers.length === 0) {
+                return (
+                  <tr>
+                    <td colSpan={6} style={{ color: '#64748b', textAlign: 'center', padding: 20 }}>
+                      {search ? 'No users match your search.' : 'No users found.'}
+                    </td>
+                  </tr>
+                );
+              }
+              return filteredUsers.map((u) => (
+                <tr key={u.id}>
+                  <td style={{ fontWeight: 500 }}>{u.name}</td>
+                  <td style={{ color: '#94a3b8' }}>{u.email}</td>
+                  <td>
+                    <select
+                      className="select-inline"
+                      value={u.role}
+                      onChange={(e) => handleRoleChange(u.id, e.target.value)}
+                      disabled={u.id === user.id}
                     >
-                      <i className="fa-solid fa-trash-can" style={{ marginRight: 4 }}></i>
-                      Delete
-                    </button>
-                  )}
-                  {u.id === user.id && (
-                    <span style={{ color: '#64748b', fontSize: 13 }}>You</span>
-                  )}
-                </td>
-              </tr>
-            ))}
+                      <option value="member">Member</option>
+                      <option value="admin">Admin</option>
+                    </select>
+                  </td>
+                  <td style={{ fontSize: 14 }}>{u.project_count}</td>
+                  <td style={{ fontSize: 14 }}>{u.task_count}</td>
+                  <td>
+                    {u.id !== user.id && (
+                      <button
+                        className="btn btn-danger"
+                        style={{ padding: '6px 14px', fontSize: 12 }}
+                        onClick={() => handleDeleteUser(u.id, u.name)}
+                      >
+                        <i className="fa-solid fa-trash-can" style={{ marginRight: 4 }}></i>
+                        Delete
+                      </button>
+                    )}
+                    {u.id === user.id && (
+                      <span style={{ color: '#64748b', fontSize: 13 }}>You</span>
+                    )}
+                  </td>
+                </tr>
+              ));
+            })()}
           </tbody>
         </table>
       </div>
