@@ -10,17 +10,29 @@
     "build": "npx vite build",
     "preview": "vite preview"
   },
+  {
   "dependencies": {
-    "axios": "^1.7.7",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
-    "react-router-dom": "^6.26.2",
-    "serve": "^14.2.6"
+    "react": "^18.x.x",
+    "react-dom": "^18.x.x",
+    "serve": "^14.x.x",
+    "vite": "^5.4.21",
+    "@vitejs/plugin-react": "^4.x.x"
   },
   "devDependencies": {
-    "@types/react": "^18.3.5",
-    "@types/react-dom": "^18.3.0",
-    "@vitejs/plugin-react": "^4.7.0",
-    "vite": "^5.4.21"
+    // remove vite and @vitejs/plugin-react from here
   }
+}
+  // "dependencies": {
+  //   "axios": "^1.7.7",
+  //   "react": "^18.3.1",
+  //   "react-dom": "^18.3.1",
+  //   "react-router-dom": "^6.26.2",
+  //   "serve": "^14.2.6"
+  // },
+  // "devDependencies": {
+  //   "@types/react": "^18.3.5",
+  //   "@types/react-dom": "^18.3.0",
+  //   "@vitejs/plugin-react": "^4.7.0",
+  //   "vite": "^5.4.21"
+  // }
 }
