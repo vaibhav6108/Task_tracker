@@ -3,7 +3,9 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm install
 COPY . .
-RUN npm run build
+ARG VITE_API_URL
+ENV VITE_API_URL=$VITE_API_URL
+RUN node node_modules/vite/bin/vite.js build
 RUN npm install -g serve
 EXPOSE 3000
 CMD ["serve", "-s", "dist", "-l", "3000"]
