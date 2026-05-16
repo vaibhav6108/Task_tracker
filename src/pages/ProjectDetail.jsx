@@ -23,6 +23,7 @@ export default function ProjectDetail() {
     title: '', description: '', priority: 'medium', due_date: '', assigned_to: '', status: 'pending',
   });
   const [memberForm, setMemberForm] = useState({ userId: '', role: 'member' });
+  const [taskSearch, setTaskSearch] = useState('');
 
   const fetchData = async () => {
     try {
@@ -132,6 +133,15 @@ export default function ProjectDetail() {
     completed: tasks.filter((t) => t.status === 'completed').length,
   };
 
+  const filteredTasks = tasks.filter((t) => {
+    const q = taskSearch.toLowerCase();
+    return (
+      !q ||
+      t.title.toLowerCase().includes(q) ||
+      (t.assigned_to_name || '').toLowerCase().includes(q)
+    );
+  });
+
   return (
     <div>
       <Link to="/projects" style={{ color: '#60a5fa', fontSize: 14, marginBottom: 16, display: 'block' }}>
@@ -237,10 +247,14 @@ export default function ProjectDetail() {
       <div className="table-section">
         <div className="table-header">
           <h2>Tasks ({tasks.length})</h2>
+          <div className="search-box" style={{ width: 220, height: 40 }}>
+            <i className="fa-solid fa-search"></i>
+            <input type="text" placeholder="Search tasks..." value={taskSearch} onChange={(e) => setTaskSearch(e.target.value)} />
+          </div>
         </div>
-        {tasks.length === 0 ? (
+        {filteredTasks.length === 0 ? (
           <p style={{ color: '#64748b', textAlign: 'center', padding: 30 }}>
-            No tasks yet. Click "Add Task" to create one.
+            {taskSearch ? 'No tasks match your search.' : 'No tasks yet. Click "Add Task" to create one.'}
           </p>
         ) : (
           <table>
@@ -255,7 +269,7 @@ export default function ProjectDetail() {
               </tr>
             </thead>
             <tbody>
-              {tasks.map((task) => (
+              {filteredTasks.map((task) => (
                 <tr key={task.id}>
                   <td style={{ fontWeight: 500 }}>{task.title}</td>
                   <td>

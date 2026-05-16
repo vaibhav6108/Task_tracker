@@ -7,6 +7,8 @@ import Projects from './pages/Projects';
 import ProjectDetail from './pages/ProjectDetail';
 import Tasks from './pages/Tasks';
 import Admin from './pages/Admin';
+import Calendar from './pages/Calendar';
+import OverdueStudents from './pages/OverdueStudents';
 import Sidebar from './components/Sidebar';
 
 function ProtectedRoute({ children }) {
@@ -40,6 +42,8 @@ export default function App() {
           <Route path="/projects/:id" element={<ProjectDetail />} />
           <Route path="/tasks" element={<Tasks />} />
           <Route path="/admin" element={<Admin />} />
+          <Route path="/calendar" element={<Calendar />} />
+          <Route path="/overdue-students" element={<OverdueStudents />} />
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
       </div>

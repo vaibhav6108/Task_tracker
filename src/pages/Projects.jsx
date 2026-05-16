@@ -75,9 +75,23 @@ export default function Projects() {
                 <p style={{ color: '#64748b', fontSize: 14, marginBottom: 16, lineHeight: 1.5 }}>
                   {project.description || 'No description'}
                 </p>
+                {parseInt(project.task_count) > 0 && (
+                  <div style={{ marginBottom: 12 }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, color: '#94a3b8', marginBottom: 6 }}>
+                      <span>Progress</span>
+                      <span>{Math.round((parseInt(project.completed_task_count) / parseInt(project.task_count)) * 100)}%</span>
+                    </div>
+                    <div className="progress-bar">
+                      <div
+                        className={`progress-bar-fill ${parseInt(project.completed_task_count) === parseInt(project.task_count) ? 'complete' : ''}`}
+                        style={{ width: `${(parseInt(project.completed_task_count) / parseInt(project.task_count)) * 100}%` }}
+                      ></div>
+                    </div>
+                  </div>
+                )}
                 <div style={{ display: 'flex', gap: 20, fontSize: 13, color: '#94a3b8' }}>
                   <span><i className="fa-solid fa-users" style={{ marginRight: 6 }}></i>{project.member_count} members</span>
-                  <span><i className="fa-solid fa-list-check" style={{ marginRight: 6 }}></i>{project.task_count} tasks</span>
+                  <span><i className="fa-solid fa-list-check" style={{ marginRight: 6 }}></i>{project.completed_task_count || 0}/{project.task_count} tasks</span>
                 </div>
               </div>
             </Link>

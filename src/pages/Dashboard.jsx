@@ -41,9 +41,15 @@ export default function Dashboard() {
   };
 
   const filteredTasks = getFilteredTasks();
-  const searchedTasks = filteredTasks.filter((t) =>
-    t.title.toLowerCase().includes(search.toLowerCase())
-  );
+  const searchedTasks = filteredTasks.filter((t) => {
+    const q = search.toLowerCase();
+    return (
+      !q ||
+      t.title.toLowerCase().includes(q) ||
+      (t.project_name || '').toLowerCase().includes(q) ||
+      (t.assigned_to_name || '').toLowerCase().includes(q)
+    );
+  });
 
   const makeConicGradient = () => {
     if (totalTasks === 0) return 'conic-gradient(#1e293b 0deg 360deg)';

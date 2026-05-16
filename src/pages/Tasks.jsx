@@ -54,9 +54,14 @@ export default function Tasks() {
       ? tasks.filter((t) => t.status !== 'completed' && t.due_date && new Date(t.due_date) < today)
       : tasks.filter((t) => t.status === filter);
 
-  const searched = filtered.filter((t) =>
-    t.title.toLowerCase().includes(search.toLowerCase())
-  );
+  const searched = filtered.filter((t) => {
+    const q = search.toLowerCase();
+    return (
+      t.title.toLowerCase().includes(q) ||
+      (t.project_name || projectMap[t.project_id] || '').toLowerCase().includes(q) ||
+      (t.assigned_to_name || '').toLowerCase().includes(q)
+    );
+  });
 
   const projectMap = {};
   projects.forEach((p) => { projectMap[p.id] = p.name; });
