@@ -817,19 +817,20 @@ td {
 /* CALENDAR */
 .calendar-container {
   background: var(--bg-card);
-  border-radius: 20px;
-  padding: 25px;
+  border-radius: 16px;
+  padding: 16px;
+  max-width: 550px;
 }
 
 .calendar-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 25px;
+  margin-bottom: 14px;
 }
 
 .calendar-header h2 {
-  font-size: 20px;
+  font-size: 15px;
   font-weight: 600;
 }
 
@@ -837,15 +838,15 @@ td {
   background: var(--bg-btn-secondary);
   border: none;
   color: var(--text-muted);
-  width: 40px;
-  height: 40px;
-  border-radius: 12px;
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   transition: 0.3s;
-  font-size: 16px;
+  font-size: 12px;
 }
 
 .calendar-nav-btn:hover {
@@ -856,39 +857,38 @@ td {
 .calendar-weekdays {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  gap: 4px;
-  margin-bottom: 8px;
+  gap: 2px;
+  margin-bottom: 4px;
 }
 
 .calendar-weekday {
   text-align: center;
-  font-size: 12px;
+  font-size: 10px;
   font-weight: 600;
   color: var(--text-muted-darker);
   text-transform: uppercase;
-  padding: 8px 0;
+  padding: 4px 0;
 }
 
 .calendar-days {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  gap: 4px;
+  gap: 2px;
 }
 
 .calendar-day {
   aspect-ratio: 1;
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  border-radius: 12px;
+  border-radius: 8px;
   cursor: pointer;
   transition: 0.2s;
-  font-size: 14px;
+  font-size: 11px;
   font-weight: 500;
   color: var(--text-secondary);
   position: relative;
-  min-height: 70px;
+  min-height: 32px;
 }
 
 .calendar-day:hover {
@@ -908,12 +908,12 @@ td {
 
 .calendar-day.has-task::after {
   content: '';
-  width: 6px;
-  height: 6px;
+  width: 4px;
+  height: 4px;
   border-radius: 50%;
   background: var(--accent-light);
   position: absolute;
-  bottom: 8px;
+  bottom: 4px;
 }
 
 .calendar-day.today.has-task::after {
@@ -921,8 +921,8 @@ td {
 }
 
 .calendar-day .task-dot {
-  width: 5px;
-  height: 5px;
+  width: 4px;
+  height: 4px;
   border-radius: 50%;
   margin: 1px;
 }
@@ -930,25 +930,26 @@ td {
 .calendar-day .task-dots {
   display: flex;
   gap: 2px;
-  margin-top: 3px;
+  margin-top: 2px;
 }
 
 .calendar-day .day-number {
-  font-size: 14px;
+  font-size: 11px;
   font-weight: 500;
 }
 
 .calendar-task-list {
-  margin-top: 25px;
+  margin-top: 14px;
   background: var(--bg-card);
-  border-radius: 20px;
-  padding: 25px;
+  border-radius: 16px;
+  padding: 16px;
+  max-width: 550px;
 }
 
 .calendar-task-list h3 {
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 600;
-  margin-bottom: 16px;
+  margin-bottom: 12px;
 }
 
 /* OVERDUE STUDENTS */
